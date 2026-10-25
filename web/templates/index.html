@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Wake.ai — the cleanup crew for your code</title>
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+  <header class="hero">
+    <div class="brand">
+      <span class="mark" aria-hidden="true">🦅</span>
+      <div>
+        <h1>Wake.ai</h1>
+        <p class="tagline">the cleanup crew for your code</p>
+      </div>
+    </div>
+    <p class="sub">Find dead Python. Prove every removal. Keep a graveyard. Blast radius zero.</p>
+  </header>
+
+  <main class="grid">
+    <section class="card">
+      <h2>Start a cleanup</h2>
+      <label>Demo repo
+        <select id="demo">
+          <option value="tidy-todo">tidy-todo</option>
+          <option value="flask-blog">flask-blog</option>
+        </select>
+      </label>
+      <label class="row"><input type="checkbox" id="replay" /> Replay mode</label>
+      <button id="run" class="primary">Run Wake.ai</button>
+      <p class="hint">poisoned-carcass is blocked on the host — only inside a hardened sandbox.</p>
+      <p class="hint stub">AI triage/planner: deterministic stubs until build week (3–8 Nov 2026).</p>
+    </section>
+
+    <section class="card">
+      <h2>Live timeline</h2>
+      <ol id="timeline" class="timeline"></ol>
+    </section>
+
+    <section class="card">
+      <h2>Graveyard</h2>
+      <div id="graveyard" class="graveyard"></div>
+      <div class="row actions">
+        <button id="resurrect-all" disabled>Resurrect all</button>
+        <a id="download" class="button" href="#" hidden>Download zip</a>
+      </div>
+    </section>
+
+    <section class="card contain">
+      <h2>Containment</h2>
+      <ul>
+        <li>gVisor <code>runsc</code> (fallback <code>runc</code>)</li>
+        <li><code>cap-drop ALL</code> · no-new-privileges · non-root</li>
+        <li>read-only rootfs · tmpfs workspace</li>
+        <li>512m / 1 CPU / pids 128 · 60s/cmd · 8 min/job</li>
+        <li>network off after clone · block 169.254.169.254</li>
+        <li>control plane holds keys — never runs user code</li>
+      </ul>
+      <pre id="evidence" class="evidence">No job evidence yet.</pre>
+    </section>
+  </main>
+
+  <footer>
+    <span>Blast Radius Zero · Vultr Agent Rush</span>
+  </footer>
+  <script src="/static/app.js"></script>
+</body>
+</html>
