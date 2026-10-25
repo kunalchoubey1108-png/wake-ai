@@ -1,0 +1,16 @@
+#cloud-config
+# Vultr sandbox-host VM — runs containers; holds no API keys
+package_update: true
+packages: [docker.io, git, curl]
+runcmd:
+  - systemctl enable --now docker
+  - |
+    # Install gVisor runsc (see https://gvisor.dev/docs/user_guide/install/)
+    curl -fsSL https://gvisor.dev/archive.key | gpg --dearmor -o /usr/share/keyrings/gvisor-archive-keyring.gpg
+    echo "deb [signed-by=/usr/share/keyrings/gvisor-archive-keyring.gpg] https://storage.googleapis.com/gvisor/releases release main" \
+      > /etc/apt/sources.list.d/gvisor.list || true
+    apt-get update && apt-get install -y runsc || true
+    runsc install || true
+    systemctl restart docker || true
+  - /opt/wake-ai/infra/firewall/apply.sh || true
+  - (crontab -l 2>/dev/null; echo "*/15 * * * * /opt/wake-ai/infra/sweeper.sh") | crontab -

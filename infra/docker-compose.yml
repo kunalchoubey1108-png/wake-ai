@@ -1,0 +1,15 @@
+services:
+  control-plane:
+    build:
+      context: ..
+      dockerfile: infra/Dockerfile.control
+    ports:
+      - "8080:8080"
+    env_file:
+      - ../.env.example
+    volumes:
+      - ../data:/app/data
+      - /var/run/docker.sock:/var/run/docker.sock
+    restart: unless-stopped
+
+  # sandbox host is a separate VM in production; locally the control plane talks to host Docker

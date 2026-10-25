@@ -1,0 +1,9 @@
+#cloud-config
+# Vultr control-plane VM — holds keys; never runs user code
+package_update: true
+packages: [docker.io, git, curl, caddy]
+runcmd:
+  - systemctl enable --now docker
+  - mkdir -p /opt/wake-ai /etc/wake
+  - echo "Place .env with Vultr inference key here — never on sandbox host" > /etc/wake/README
+  - (crontab -l 2>/dev/null; echo "*/15 * * * * /opt/wake-ai/infra/sweeper.sh") | crontab -
