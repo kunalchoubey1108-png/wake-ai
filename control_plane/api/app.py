@@ -27,6 +27,33 @@ ROOT = Path(__file__).resolve().parents[2]
 DEMO = ROOT / "demo-repos"
 WEB = ROOT / "web"
 
+REPLAY = ROOT / "replay"
+
+
+def _load_replay_fixture(label: str) -> dict:
+    # map github urls / uploads to tidy-todo fallback
+    key = label
+    if label not in ("tidy-todo", "flask-blog", "poisoned-carcass"):
+        key = "tidy-todo"
+    path = REPLAY / f"{key}.json"
+    if not path.is_file():
+        # also try settings path
+        alt = settings.wake_replay_dir / f"{key}.json"
+        path = alt if alt.is_file() else path
+    if not path.is_file():
+        raise FileNotFoundError(f"no replay fixture for {key}")
+    import copy
+    data = json.loads(path.read_text(encoding="utf-8"))
+    return copy.deepcopy(data)
+
+
+def _should_force_replay(db: Database, explicit: bool) -> tuple[bool, str]:
+    if explicit:
+        return True, "explicit"
+    if db.count_all_jobs() >= settings.wake_spend_cap_jobs:
+        return True, "spend_cap"
+    return False, ""
+
 
 def create_app() -> FastAPI:
     settings.wake_data_dir.mkdir(parents=True, exist_ok=True)
@@ -65,18 +92,41 @@ def create_app() -> FastAPI:
             raise HTTPException(429, "rate limit: 1 running job per IP")
 
     def _start_job(src: Path, ip: str, label: str, replay: bool = False) -> str:
-        _rate_check(ip)
+        force, reason = _should_force_replay(db, replay)
+        if not force:
+            try:
+                _rate_check(ip)
+            except HTTPException as e:
+                if e.status_code == 429:
+                    force, reason = True, "rate_limit"
+                else:
+                    raise
         job_id = f"job_{uuid.uuid4().hex[:10]}"
         work = settings.wake_data_dir / "jobs"
         work.mkdir(parents=True, exist_ok=True)
-        db.insert_job(job_id, ip, label, str(work), replay=replay)
-        db.record_rate(ip)
+        db.insert_job(job_id, ip, label, str(work), replay=force)
+        if not force:
+            db.record_rate(ip)
 
         def worker():
             db.update_job(job_id, "running")
             try:
-                result = run_job_local(src, work, job_id=job_id, repo_label=label, replay=replay)
-                db.update_job(job_id, result.status.value, result.model_dump())
+                if force:
+                    fixture = _load_replay_fixture(label if label in ("tidy-todo", "flask-blog", "poisoned-carcass") else "tidy-todo")
+                    fixture["job_id"] = job_id
+                    fixture["replay"] = True
+                    fixture.setdefault("timeline", [])
+                    # stream-friendly: stamp reason on first event
+                    fixture["timeline"].insert(
+                        0,
+                        {"ts": time.time(), "kind": "replay", "message": f"Serving recorded runsc fixture ({reason})", "data": {"reason": reason}},
+                    )
+                    # pace timeline slightly so SSE clients see events
+                    time.sleep(0.15)
+                    db.update_job(job_id, fixture.get("status", "succeeded"), fixture)
+                    return
+                result = run_job_local(src, work, job_id=job_id, repo_label=label, replay=False)
+                db.update_job(job_id, result.status.value, result.model_dump(mode="json"))
             except Exception as e:
                 db.update_job(job_id, "failed", {"job_id": job_id, "status": "failed", "error": str(e), "timeline": []})
 
@@ -93,17 +143,20 @@ def create_app() -> FastAPI:
     ):
         ip = _client_ip(request)
         if demo_id:
-            if demo_id == "poisoned-carcass":
+            force_replay, _reason = _should_force_replay(db, replay)
+            if demo_id == "poisoned-carcass" and not force_replay:
                 raise HTTPException(
                     400,
-                    "poisoned-carcass only runs inside a hardened sandbox with WAKE_SANDBOX=1; "
-                    "not available via host-local demo endpoint",
+                    "poisoned-carcass only via replay (?replay=1 / spend cap) or a hardened sandbox with WAKE_SANDBOX=1; "
+                    "not available as a live host-local demo",
                 )
             src = DEMO / demo_id
-            if not src.is_dir():
+            if not src.is_dir() and demo_id != "poisoned-carcass":
                 raise HTTPException(404, "unknown demo")
-            job_id = _start_job(src, ip, demo_id, replay=replay)
-            return {"job_id": job_id}
+            if not src.is_dir():
+                src = DEMO / "tidy-todo"  # unused when replaying poisoned fixture
+            job_id = _start_job(src, ip, demo_id, replay=force_replay or replay)
+            return {"job_id": job_id, "replay": force_replay or replay}
 
         if archive is not None:
             data = await archive.read()
@@ -246,6 +299,21 @@ def create_app() -> FastAPI:
             media_type="application/zip",
             headers={"Content-Disposition": f'attachment; filename="{job_id}.zip"'},
         )
+
+
+    @app.get("/api/replay")
+    def list_replay():
+        items = []
+        for p in sorted(REPLAY.glob("*.json")):
+            items.append({"id": p.stem, "path": str(p.relative_to(ROOT))})
+        return {"fixtures": items, "spend_cap": settings.wake_spend_cap_jobs, "jobs_so_far": db.count_all_jobs()}
+
+    @app.get("/api/containment/evidence")
+    def containment_evidence():
+        path = ROOT / "docs" / "poisoned_carcass_evidence.json"
+        if not path.is_file():
+            raise HTTPException(404)
+        return json.loads(path.read_text(encoding="utf-8"))
 
     return app
 

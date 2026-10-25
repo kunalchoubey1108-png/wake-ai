@@ -1,0 +1,117 @@
+{
+  "job_id": "replay_poisoned_carcass",
+  "status": "succeeded",
+  "repo_label": "poisoned-carcass",
+  "base_sha": "fixture",
+  "findings": [],
+  "removals": [],
+  "timeline": [
+    {
+      "ts": 1792933831.1407464,
+      "kind": "start",
+      "message": "Replay: poisoned-carcass containment demo (runsc)",
+      "data": {}
+    },
+    {
+      "ts": 1792933831.1407547,
+      "kind": "sandbox",
+      "message": "Created sandbox runtime=runsc id=4d4ea388f976",
+      "data": {}
+    },
+    {
+      "ts": 1792933831.1407576,
+      "kind": "attack",
+      "message": "rm -rf / blocked (Permission denied on RO root)",
+      "data": {}
+    },
+    {
+      "ts": 1792933831.1407592,
+      "kind": "attack",
+      "message": "fork bomb contained (pids=128 / gVisor; sandbox stopped)",
+      "data": {}
+    },
+    {
+      "ts": 1792933831.1407614,
+      "kind": "attack",
+      "message": "infinite loop killed at ~60s (exit 137)",
+      "data": {}
+    },
+    {
+      "ts": 1792933831.1407623,
+      "kind": "attack",
+      "message": "env/metadata/outside URL blocked (network none)",
+      "data": {}
+    },
+    {
+      "ts": 1792933831.140764,
+      "kind": "containment",
+      "message": "Containment evidence recorded (runtime=runsc). Host: 0 containers left.",
+      "data": {}
+    },
+    {
+      "ts": 1792933831.1407652,
+      "kind": "done",
+      "message": "Replay complete: blast radius zero",
+      "data": {}
+    }
+  ],
+  "containment": {
+    "runtime": "runsc",
+    "uid": 65532,
+    "container_id": "4d4ea388f976",
+    "peak_memory_bytes": null,
+    "kills": [
+      "timeout/kill on: ['python', '-c', 'while True: pass'] exit=137"
+    ],
+    "teardown_ms": null,
+    "env_dump": {
+      "PYTHON_SHA256": "",
+      "HOSTNAME": "4d4ea388f976",
+      "HOME": "/home/wake",
+      "PYTHON_VERSION": "",
+      "PIP_DISABLE_PIP_VERSION_CHECK": "1",
+      "WAKE_SANDBOX": "1",
+      "PATH": "/usr/local/bin:/usr/bin:/bin",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONUNBUFFERED": "1",
+      "LANG": "C.UTF-8",
+      "GPG_KEY": ""
+    },
+    "network_mode_final": "none",
+    "notes": [
+      "cap-drop ALL",
+      "no-new-privileges",
+      "read-only rootfs",
+      "tmpfs /workspace+/tmp",
+      "mem=512m cpus=1.0 pids=128",
+      "replay fixture from docs/poisoned_carcass_evidence.json",
+      "metadata VM firewall unverified until deploy"
+    ]
+  },
+  "error": null,
+  "wake_md": "# Wake.ai graveyard\n\nPoisoned-carcass containment demo \u2014 no code removals; blast radius zero.\n",
+  "replay": true,
+  "fixture_source": "runsc_sandbox",
+  "attacks": {
+    "rm_rf": {
+      "pass": true,
+      "expected": "rm cannot wipe RO root (Permission denied / Read-only); tmpfs /workspace+/tmp remain usable; python still runs; host untouched"
+    },
+    "env_metadata_network": {
+      "pass": true,
+      "expected": "WAKE_SANDBOX=1; no host cloud/API secrets; fetches fail under network=none"
+    },
+    "fork_bomb": {
+      "pass": true,
+      "expected": "forks contained by pids=128 / gVisor; sandbox may die; host unaffected"
+    },
+    "infinite_loop": {
+      "pass": true,
+      "expected": "timeout -s KILL 60s ends the loop; duration ~60s"
+    },
+    "pytest_conftest_rm_and_innocent": {
+      "pass": true,
+      "expected": "conftest rm -rf / cannot kill host; may wipe sandbox tmpfs workspace (contained); after re-seed, innocent_add passes"
+    }
+  }
+}

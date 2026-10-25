@@ -25,6 +25,10 @@ class Settings(BaseSettings):
     wake_sandbox_network_clone: str = "bridge"
     wake_output_max_bytes: int = 1_048_576
 
+    # After this many jobs (global), new jobs serve replay fixtures unless forced live
+    wake_spend_cap_jobs: int = 50
+    wake_replay_dir: Path = Path("./replay")
+
     wake_sandbox_remote_url: str = ""
     wake_sandbox_client_cert: str = ""
     wake_sandbox_client_key: str = ""

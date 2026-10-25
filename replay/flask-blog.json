@@ -1,0 +1,471 @@
+{
+  "job_id": "job_a429bac6ae",
+  "status": "succeeded",
+  "repo_label": "flask-blog",
+  "base_sha": "2e74c7927c22d3b856c5c8591df7b48e2474cb51",
+  "findings": [
+    {
+      "id": "f_0000",
+      "file": "src/flask_blog/app.py",
+      "kind": "unused_import",
+      "symbol": "hashlib",
+      "line": 5,
+      "confidence": 90.0,
+      "message": "unused import 'hashlib'",
+      "source": "vulture",
+      "status": "alive"
+    },
+    {
+      "id": "f_0001",
+      "file": "src/flask_blog/app.py",
+      "kind": "unused_import",
+      "symbol": "Path",
+      "line": 6,
+      "confidence": 90.0,
+      "message": "unused import 'Path'",
+      "source": "vulture",
+      "status": "alive"
+    },
+    {
+      "id": "f_0002",
+      "file": "src/flask_blog/app.py",
+      "kind": "unused_function",
+      "symbol": "health",
+      "line": 14,
+      "confidence": 60.0,
+      "message": "unused function 'health'",
+      "source": "vulture",
+      "status": "skipped"
+    },
+    {
+      "id": "f_0003",
+      "file": "src/flask_blog/app.py",
+      "kind": "unused_function",
+      "symbol": "list_posts",
+      "line": 18,
+      "confidence": 60.0,
+      "message": "unused function 'list_posts'",
+      "source": "vulture",
+      "status": "skipped"
+    },
+    {
+      "id": "f_0004",
+      "file": "src/flask_blog/app.py",
+      "kind": "unused_function",
+      "symbol": "create_post",
+      "line": 22,
+      "confidence": 60.0,
+      "message": "unused function 'create_post'",
+      "source": "vulture",
+      "status": "skipped"
+    },
+    {
+      "id": "f_0005",
+      "file": "src/flask_blog/app.py",
+      "kind": "unused_function",
+      "symbol": "unused_slugify",
+      "line": 36,
+      "confidence": 60.0,
+      "message": "unused function 'unused_slugify'",
+      "source": "vulture",
+      "status": "alive"
+    },
+    {
+      "id": "f_0006",
+      "file": "src/flask_blog/app.py",
+      "kind": "unused_class",
+      "symbol": "DraftCache",
+      "line": 41,
+      "confidence": 60.0,
+      "message": "unused class 'DraftCache'",
+      "source": "vulture",
+      "status": "alive"
+    },
+    {
+      "id": "f_0007",
+      "file": "src/flask_blog/app.py",
+      "kind": "unused_function",
+      "symbol": "put",
+      "line": 47,
+      "confidence": 60.0,
+      "message": "unused method 'put'",
+      "source": "vulture",
+      "status": "skipped"
+    },
+    {
+      "id": "f_0008",
+      "file": "src/flask_blog/app.py",
+      "kind": "unused_variable",
+      "symbol": "DEPRECATED_THEME",
+      "line": 51,
+      "confidence": 60.0,
+      "message": "unused variable 'DEPRECATED_THEME'",
+      "source": "vulture",
+      "status": "removed"
+    },
+    {
+      "id": "f_0009",
+      "file": "src/flask_blog/app.py",
+      "kind": "unused_function",
+      "symbol": "_debug_only_banner",
+      "line": 54,
+      "confidence": 60.0,
+      "message": "unused function '_debug_only_banner'",
+      "source": "vulture",
+      "status": "removed"
+    },
+    {
+      "id": "f_0010",
+      "file": "src/flask_blog/app.py",
+      "kind": "unreachable",
+      "symbol": "unreachable",
+      "line": 55,
+      "confidence": 100.0,
+      "message": "unsatisfiable 'if' condition",
+      "source": "vulture",
+      "status": "removed"
+    },
+    {
+      "id": "f_0011",
+      "file": "src/flask_blog/app.py",
+      "kind": "unused_import",
+      "symbol": "pathlib.Path",
+      "line": 6,
+      "confidence": 90.0,
+      "message": "`pathlib.Path` imported but unused",
+      "source": "ruff",
+      "status": "removed"
+    }
+  ],
+  "removals": [
+    {
+      "id": "f_0008",
+      "file": "src/flask_blog/app.py",
+      "base_sha": "2e74c7927c22d3b856c5c8591df7b48e2474cb51",
+      "hunk": "DEPRECATED_THEME = \"midnight\"  # dead variable\n",
+      "sha256": "642b5d449323d6501b38643a5cf948a0fdafff713ac4d51aed61f4933ca86923",
+      "depends_on": [],
+      "symbol": "DEPRECATED_THEME",
+      "kind": "unused_variable",
+      "reason": "vulture: unused variable 'DEPRECATED_THEME'"
+    },
+    {
+      "id": "f_0009",
+      "file": "src/flask_blog/app.py",
+      "base_sha": "2e74c7927c22d3b856c5c8591df7b48e2474cb51",
+      "hunk": "def _debug_only_banner() -> None:\n",
+      "sha256": "1fd096be5b86b2bbed49b6e831b0c1b800770382ded7d6d6a7ef820f0843dd2f",
+      "depends_on": [],
+      "symbol": "_debug_only_banner",
+      "kind": "unused_function",
+      "reason": "vulture: unused function '_debug_only_banner'"
+    },
+    {
+      "id": "f_0010",
+      "file": "src/flask_blog/app.py",
+      "base_sha": "2e74c7927c22d3b856c5c8591df7b48e2474cb51",
+      "hunk": "    if False:\n        print(\"DEBUG BANNER\")  # unreachable\n\n\n",
+      "sha256": "06b654fdb5e83ca17bf3c98beb0d14bd5a930109a504912a9ad2a7546ea94b3a",
+      "depends_on": [],
+      "symbol": "unreachable",
+      "kind": "unreachable",
+      "reason": "vulture: unsatisfiable 'if' condition"
+    },
+    {
+      "id": "f_0011",
+      "file": "src/flask_blog/app.py",
+      "base_sha": "2e74c7927c22d3b856c5c8591df7b48e2474cb51",
+      "hunk": "\n",
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b",
+      "depends_on": [],
+      "symbol": "pathlib.Path",
+      "kind": "unused_import",
+      "reason": "ruff: `pathlib.Path` imported but unused"
+    }
+  ],
+  "timeline": [
+    {
+      "ts": 1792933819.277522,
+      "kind": "start",
+      "message": "Job job_a429bac6ae started for flask-blog.",
+      "data": {}
+    },
+    {
+      "ts": 1792933819.5214038,
+      "kind": "sandbox",
+      "message": "Created sandbox runtime=runsc id=742d69a572a8",
+      "data": {
+        "runtime": "runsc",
+        "container_id": "742d69a572a8"
+      }
+    },
+    {
+      "ts": 1792933819.6958516,
+      "kind": "network",
+      "message": "Network disabled after repo copy",
+      "data": {}
+    },
+    {
+      "ts": 1792933819.6960826,
+      "kind": "plan",
+      "message": "Deterministic plan ready",
+      "data": {
+        "plan": {
+          "has_pytest": true,
+          "test_cmd": [
+            "python",
+            "-m",
+            "pytest",
+            "-q"
+          ],
+          "scan_cmd_vulture": [
+            "vulture",
+            "src",
+            "--min-confidence",
+            "60"
+          ],
+          "scan_cmd_ruff": [
+            "ruff",
+            "check",
+            "src",
+            "--select",
+            "F401,F841",
+            "--output-format",
+            "json"
+          ],
+          "notes": [
+            "deterministic planner stub \u2014 replace during build week"
+          ]
+        }
+      }
+    },
+    {
+      "ts": 1792933819.9947062,
+      "kind": "scan",
+      "message": "Scavenge complete: 12 findings.",
+      "data": {
+        "vulture_exit": 3,
+        "ruff_exit": 1
+      }
+    },
+    {
+      "ts": 1792933819.9947329,
+      "kind": "triage",
+      "message": "Triage (confidence\u226560): 8 candidates.",
+      "data": {}
+    },
+    {
+      "ts": 1792933821.1705,
+      "kind": "pytest",
+      "message": "sandbox pytest exit=0 timeout=False killed=False 1108ms",
+      "data": {}
+    },
+    {
+      "ts": 1792933822.3241189,
+      "kind": "pytest",
+      "message": "sandbox pytest exit=1 timeout=False killed=False 1079ms",
+      "data": {}
+    },
+    {
+      "ts": 1792933823.246338,
+      "kind": "pytest",
+      "message": "sandbox pytest exit=2 timeout=False killed=False 846ms",
+      "data": {}
+    },
+    {
+      "ts": 1792933824.2129438,
+      "kind": "pytest",
+      "message": "sandbox pytest exit=2 timeout=False killed=False 892ms",
+      "data": {}
+    },
+    {
+      "ts": 1792933825.1613455,
+      "kind": "pytest",
+      "message": "sandbox pytest exit=2 timeout=False killed=False 871ms",
+      "data": {}
+    },
+    {
+      "ts": 1792933826.079305,
+      "kind": "pytest",
+      "message": "sandbox pytest exit=2 timeout=False killed=False 846ms",
+      "data": {}
+    },
+    {
+      "ts": 1792933826.9854627,
+      "kind": "pytest",
+      "message": "sandbox pytest exit=2 timeout=False killed=False 835ms",
+      "data": {}
+    },
+    {
+      "ts": 1792933827.89747,
+      "kind": "pytest",
+      "message": "sandbox pytest exit=2 timeout=False killed=False 839ms",
+      "data": {}
+    },
+    {
+      "ts": 1792933828.7898588,
+      "kind": "pytest",
+      "message": "sandbox pytest exit=2 timeout=False killed=False 820ms",
+      "data": {}
+    },
+    {
+      "ts": 1792933829.9529145,
+      "kind": "pytest",
+      "message": "sandbox pytest exit=0 timeout=False killed=False 1088ms",
+      "data": {}
+    },
+    {
+      "ts": 1792933829.9529736,
+      "kind": "prove",
+      "message": "baseline ok",
+      "data": {}
+    },
+    {
+      "ts": 1792933829.9529772,
+      "kind": "prove",
+      "message": "split n=8",
+      "data": {}
+    },
+    {
+      "ts": 1792933829.9529786,
+      "kind": "prove",
+      "message": "split n=4",
+      "data": {}
+    },
+    {
+      "ts": 1792933829.95298,
+      "kind": "prove",
+      "message": "split n=2",
+      "data": {}
+    },
+    {
+      "ts": 1792933829.952981,
+      "kind": "prove",
+      "message": "alive hashlib",
+      "data": {}
+    },
+    {
+      "ts": 1792933829.952982,
+      "kind": "prove",
+      "message": "alive Path",
+      "data": {}
+    },
+    {
+      "ts": 1792933829.952983,
+      "kind": "prove",
+      "message": "split n=2",
+      "data": {}
+    },
+    {
+      "ts": 1792933829.952984,
+      "kind": "prove",
+      "message": "alive unused_slugify",
+      "data": {}
+    },
+    {
+      "ts": 1792933829.952985,
+      "kind": "prove",
+      "message": "alive DraftCache",
+      "data": {}
+    },
+    {
+      "ts": 1792933829.952986,
+      "kind": "prove",
+      "message": "removed DEPRECATED_THEME",
+      "data": {}
+    },
+    {
+      "ts": 1792933829.9529874,
+      "kind": "prove",
+      "message": "removed _debug_only_banner",
+      "data": {}
+    },
+    {
+      "ts": 1792933829.9529881,
+      "kind": "prove",
+      "message": "removed unreachable",
+      "data": {}
+    },
+    {
+      "ts": 1792933829.9529893,
+      "kind": "prove",
+      "message": "removed pathlib.Path",
+      "data": {}
+    },
+    {
+      "ts": 1792933831.1395197,
+      "kind": "containment",
+      "message": "Containment evidence recorded (runtime=runsc).",
+      "data": {
+        "evidence": {
+          "runtime": "runsc",
+          "uid": 65532,
+          "container_id": "742d69a572a8",
+          "peak_memory_bytes": 24293376,
+          "kills": [],
+          "teardown_ms": 1118.163824081421,
+          "env_dump": {
+            "PIP_DISABLE_PIP_VERSION_CHECK": "1",
+            "PATH": "/usr/local/bin:/usr/bin:/bin",
+            "HOSTNAME": "742d69a572a8",
+            "LANG": "C.UTF-8",
+            "HOME": "/home/wake",
+            "PYTHONDONTWRITEBYTECODE": "1",
+            "PYTHONUNBUFFERED": "1",
+            "GPG_KEY": "",
+            "PYTHON_SHA256": "",
+            "PYTHON_VERSION": ""
+          },
+          "network_mode_final": "none",
+          "notes": [
+            "cap-drop ALL",
+            "no-new-privileges",
+            "read-only rootfs",
+            "tmpfs /workspace+/tmp",
+            "mem=512m cpus=1.0 pids=128",
+            "network disabled after clone/install"
+          ]
+        }
+      }
+    },
+    {
+      "ts": 1792933831.1395447,
+      "kind": "done",
+      "message": "Done: 4 removed, 4 left alive.",
+      "data": {}
+    }
+  ],
+  "containment": {
+    "runtime": "runsc",
+    "uid": 65532,
+    "container_id": "742d69a572a8",
+    "peak_memory_bytes": 24293376,
+    "kills": [],
+    "teardown_ms": 1118.163824081421,
+    "env_dump": {
+      "PIP_DISABLE_PIP_VERSION_CHECK": "1",
+      "PATH": "/usr/local/bin:/usr/bin:/bin",
+      "HOSTNAME": "742d69a572a8",
+      "LANG": "C.UTF-8",
+      "HOME": "/home/wake",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONUNBUFFERED": "1",
+      "GPG_KEY": "",
+      "PYTHON_SHA256": "",
+      "PYTHON_VERSION": ""
+    },
+    "network_mode_final": "none",
+    "notes": [
+      "cap-drop ALL",
+      "no-new-privileges",
+      "read-only rootfs",
+      "tmpfs /workspace+/tmp",
+      "mem=512m cpus=1.0 pids=128",
+      "network disabled after clone/install"
+    ]
+  },
+  "error": null,
+  "wake_md": "# Wake.ai graveyard\n\n- Repo: flask-blog\n- Base commit: `2e74c7927c22d3b856c5c8591df7b48e2474cb51`\n- Job id: `job_a429bac6ae`\n- Generated (UTC): 2026-10-25T13:10:29Z\n\n## Removals\n\n### `f_0008` \u2014 DEPRECATED_THEME\n- **File:** `src/flask_blog/app.py`\n- **Reason:** vulture: unused variable 'DEPRECATED_THEME'\n- **Depends on:** _(none)_\n- **Resurrect:** `wake resurrect f_0008`\n\nRemoved hunk:\n\n```python\nDEPRECATED_THEME = \"midnight\"  # dead variable\n```\n\n### `f_0009` \u2014 _debug_only_banner\n- **File:** `src/flask_blog/app.py`\n- **Reason:** vulture: unused function '_debug_only_banner'\n- **Depends on:** _(none)_\n- **Resurrect:** `wake resurrect f_0009`\n\nRemoved hunk:\n\n```python\ndef _debug_only_banner() -> None:\n```\n\n### `f_0010` \u2014 unreachable\n- **File:** `src/flask_blog/app.py`\n- **Reason:** vulture: unsatisfiable 'if' condition\n- **Depends on:** _(none)_\n- **Resurrect:** `wake resurrect f_0010`\n\nRemoved hunk:\n\n```python\n    if False:\n        print(\"DEBUG BANNER\")  # unreachable\n```\n\n### `f_0011` \u2014 pathlib.Path\n- **File:** `src/flask_blog/app.py`\n- **Reason:** ruff: `pathlib.Path` imported but unused\n- **Depends on:** _(none)_\n- **Resurrect:** `wake resurrect f_0011`\n\nRemoved hunk:\n\n```python\n\n```\n",
+  "replay": true,
+  "fixture_source": "runsc_sandbox"
+}

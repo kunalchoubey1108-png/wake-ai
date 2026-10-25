@@ -1,3 +1,9 @@
+const params = new URLSearchParams(location.search);
+if (params.get('replay') === '1') {
+  const cb = document.getElementById('replay');
+  if (cb) cb.checked = true;
+}
+
 const timelineEl = document.getElementById('timeline');
 const graveyardEl = document.getElementById('graveyard');
 const evidenceEl = document.getElementById('evidence');
@@ -42,7 +48,7 @@ async function poll(jobId) {
     const job = await (await fetch('/api/jobs/' + jobId)).json();
     const result = job.result || {};
     renderGraveyard(jobId, result.removals || []);
-    if (result.containment) evidenceEl.textContent = JSON.stringify(result.containment, null, 2);
+    if (result.containment) { evidenceEl.dataset.live = '1'; evidenceEl.textContent = JSON.stringify(result.containment, null, 2); }
     else evidenceEl.textContent = 'Host-local run (no container evidence). Sandbox evidence appears when Docker/gVisor is available.';
     downloadA.hidden = false;
     downloadA.href = '/api/jobs/' + jobId + '/download';
@@ -74,3 +80,16 @@ resurrectAllBtn.onclick = async () => {
   graveyardEl.innerHTML = '<p>All resurrected.</p>';
   resurrectAllBtn.disabled = true;
 };
+
+// Prefill containment panel with real runsc evidence
+fetch('/api/containment/evidence').then(r => r.json()).then(ev => {
+  if (!evidenceEl || evidenceEl.dataset.live) return;
+  evidenceEl.textContent = JSON.stringify({
+    runtime: ev.runtime,
+    uid: ev.uid,
+    summary_pass: ev.summary_pass,
+    attacks: Object.fromEntries(Object.entries(ev.attacks || {}).map(([k,v]) => [k, {pass: v.pass}])),
+    host: ev.host_notes,
+    note: 'Recorded runsc evidence. Live job evidence replaces this after a run.',
+  }, null, 2);
+}).catch(() => {});

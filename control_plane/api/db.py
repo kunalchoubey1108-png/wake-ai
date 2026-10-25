@@ -84,3 +84,9 @@ class Database:
         with self._conn() as c:
             n = c.execute("SELECT COUNT(*) FROM jobs WHERE ip=? AND status='running'", (ip,)).fetchone()[0]
         return int(n)
+
+    def count_all_jobs(self) -> int:
+        with self._conn() as c:
+            n = c.execute("SELECT COUNT(*) FROM jobs").fetchone()[0]
+        return int(n)
+
