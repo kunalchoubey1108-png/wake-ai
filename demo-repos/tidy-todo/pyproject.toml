@@ -1,0 +1,19 @@
+[project]
+name = "tidy-todo"
+version = "0.1.0"
+description = "Tiny todo library with planted dead code for Wake.ai demos"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0", "vulture>=2.0", "ruff>=0.4"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]

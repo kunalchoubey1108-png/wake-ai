@@ -1,0 +1,19 @@
+[project]
+name = "poisoned-carcass"
+version = "0.1.0"
+description = "DANGEROUS sandbox attack fixture for Wake.ai — DO NOT run outside WAKE_SANDBOX=1"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.optional-dependencies]
+dev = ["pytest>=7.0"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["src"]
