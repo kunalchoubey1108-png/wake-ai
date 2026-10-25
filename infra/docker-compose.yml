@@ -11,5 +11,11 @@ services:
       - ../data:/app/data
       - /var/run/docker.sock:/var/run/docker.sock
     restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "curl", "-fsS", "http://127.0.0.1:8080/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 20s
 
   # sandbox host is a separate VM in production; locally the control plane talks to host Docker
