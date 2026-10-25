@@ -3,13 +3,15 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="description" content="Wake.ai — dead-code cleanup with blast radius zero" />
   <title>Wake.ai — the cleanup crew for your code</title>
+  <link rel="icon" href="/static/vulture.svg" type="image/svg+xml" />
   <link rel="stylesheet" href="/static/style.css" />
 </head>
 <body>
   <header class="hero">
     <div class="brand">
-      <span class="mark" aria-hidden="true">🦅</span>
+      <img class="mark" src="/static/vulture.svg" width="56" height="56" alt="Wake.ai vulture mark" />
       <div>
         <h1>Wake.ai</h1>
         <p class="tagline">the cleanup crew for your code</p>
@@ -19,7 +21,7 @@
   </header>
 
   <main class="grid">
-    <section class="card">
+    <section class="card" id="start">
       <h2>Start a cleanup</h2>
       <label>Demo repo
         <select id="demo">
@@ -30,40 +32,54 @@
       </label>
       <label class="row"><input type="checkbox" id="replay" /> Replay mode (?replay=1 / spend cap)</label>
       <button id="run" class="primary">Run Wake.ai</button>
-      <p class="hint">poisoned-carcass is blocked on the host — only inside a hardened sandbox.</p>
+      <p class="hint">Live poisoned-carcass is blocked on the host — use replay or a hardened sandbox.</p>
       <p class="hint stub">AI triage/planner: deterministic stubs until build week (3–8 Nov 2026).</p>
+      <p id="status" class="status" aria-live="polite"></p>
     </section>
 
-    <section class="card">
+    <section class="card" id="timeline-card">
       <h2>Live timeline</h2>
       <ol id="timeline" class="timeline"></ol>
     </section>
 
-    <section class="card">
+    <section class="card" id="graveyard-card">
       <h2>Graveyard</h2>
+      <p class="hint">Resurrect restores the exact hunk from <code>wake.lock.json</code>.</p>
       <div id="graveyard" class="graveyard"></div>
       <div class="row actions">
         <button id="resurrect-all" disabled>Resurrect all</button>
         <a id="download" class="button" href="#" hidden>Download zip</a>
       </div>
+      <p id="resurrect-toast" class="toast" hidden></p>
     </section>
 
-    <section class="card contain">
+    <section class="card contain" id="containment-card">
       <h2>Containment</h2>
-      <ul>
+      <div class="pill-row" id="contain-pills">
+        <span class="pill">runsc</span>
+        <span class="pill">uid 65532</span>
+        <span class="pill">pids 128</span>
+        <span class="pill">60s kill</span>
+        <span class="pill">net none</span>
+      </div>
+      <ul class="contain-list">
         <li>gVisor <code>runsc</code> (fallback <code>runc</code>)</li>
         <li><code>cap-drop ALL</code> · no-new-privileges · non-root</li>
         <li>read-only rootfs · tmpfs workspace</li>
         <li>512m / 1 CPU / pids 128 · 60s/cmd · 8 min/job</li>
-        <li>network off after clone · block 169.254.169.254</li>
+        <li>network off after clone · block 169.254.169.254*</li>
         <li>control plane holds keys — never runs user code</li>
       </ul>
-      <pre id="evidence" class="evidence">No job evidence yet.</pre>
+      <p class="hint">* VM metadata firewall unverified until Vultr deploy; <code>network none</code> proven.</p>
+      <h3>Evidence</h3>
+      <div id="attack-grid" class="attack-grid"></div>
+      <pre id="evidence" class="evidence">Loading evidence…</pre>
     </section>
   </main>
 
   <footer>
-    <span>Blast Radius Zero · Vultr Agent Rush</span>
+    <span>Blast Radius Zero · Vultr Agent Rush · MIT</span>
+    <a href="https://github.com/kunalchoubey1108-png/wake-ai">GitHub</a>
   </footer>
   <script src="/static/app.js"></script>
 </body>
