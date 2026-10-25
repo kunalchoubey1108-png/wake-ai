@@ -1,7 +1,6 @@
 # Wake.ai sandbox image — tools only; no secrets.
-# Production: rebuild with --build-arg BASE_DIGEST=sha256:... after docker buildx imagetools inspect.
-ARG BASE_IMAGE=python:3.12.7-slim-bookworm
-FROM ${BASE_IMAGE}
+# Base pinned by digest from docker hub (python:3.12.7-slim-bookworm).
+FROM python:3.12.7-slim-bookworm@sha256:60d9996b6a8a3689d36db740b49f4327be3be09a21122bd02fb8895abb38b50d
 
 ENV PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1 \
@@ -18,11 +17,8 @@ RUN useradd --uid 65532 --create-home --shell /usr/sbin/nologin wake \
 RUN pip install --no-cache-dir \
       'pytest>=7.0' \
       'vulture>=2.0' \
-      'ruff>=0.4'
-
-# Optional: node + knip for JS repos
-# RUN curl -fsSL https://deb.nodesource.com/setup_20.x | bash - \
-#  && apt-get install -y nodejs && npm install -g knip
+      'ruff>=0.4' \
+      'flask>=3.0'
 
 WORKDIR /workspace
 USER wake

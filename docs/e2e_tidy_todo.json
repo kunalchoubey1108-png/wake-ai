@@ -1,0 +1,50 @@
+{
+  "status": "succeeded",
+  "runtime": "runsc",
+  "container_id": "e380c44cd2b2",
+  "findings": 14,
+  "removals": 9,
+  "removal_symbols": [
+    "json",
+    "OrderedDict",
+    "unused_helper_format_titles",
+    "AbandonedExporter",
+    "LEGACY_MAX_ITEMS",
+    "maybe_legacy_path",
+    "flag",
+    "unreachable",
+    "collections.OrderedDict"
+  ],
+  "apply_errors": 0,
+  "error": null,
+  "notes": [
+    "cap-drop ALL",
+    "no-new-privileges",
+    "read-only rootfs",
+    "tmpfs /workspace+/tmp",
+    "mem=512m cpus=1.0 pids=128",
+    "network disabled after clone/install"
+  ],
+  "timeline_kinds": [
+    "start",
+    "sandbox",
+    "network",
+    "plan",
+    "scan",
+    "triage",
+    "pytest",
+    "pytest",
+    "prove",
+    "prove",
+    "prove",
+    "prove",
+    "prove",
+    "prove",
+    "prove",
+    "prove",
+    "prove",
+    "prove",
+    "containment",
+    "done"
+  ]
+}

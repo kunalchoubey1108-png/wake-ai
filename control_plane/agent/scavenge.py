@@ -8,6 +8,27 @@ from pathlib import Path
 
 from control_plane.models import Finding
 
+def _normalize_repo_path(path: str, repo: Path) -> str:
+    """Make scanner paths relative to repo (handles host + /workspace/repo sandbox paths)."""
+    if not path:
+        return path
+    raw = path.replace("\\", "/")
+    for prefix in ("/workspace/repo/", "/workspace/repo"):
+        if raw.startswith(prefix):
+            raw = raw[len("/workspace/repo/") :] if raw.startswith("/workspace/repo/") else ""
+            break
+    try:
+        return str(Path(raw).resolve().relative_to(repo.resolve()))
+    except Exception:
+        # already relative like src/...
+        try:
+            candidate = repo / raw
+            if candidate.exists():
+                return str(candidate.resolve().relative_to(repo.resolve()))
+        except Exception:
+            pass
+        return raw.lstrip("./")
+
 
 def _run(cmd: list[str], cwd: Path) -> tuple[int, str, str]:
     try:
@@ -45,11 +66,7 @@ def parse_vulture(text: str, repo: Path) -> list[Finding]:
         elif "unsatisfiable" in msg:
             kind = "unreachable"
             symbol = "unreachable"
-        rel = m.group("path")
-        try:
-            rel = str(Path(rel).resolve().relative_to(repo.resolve()))
-        except Exception:
-            pass
+        rel = _normalize_repo_path(m.group("path"), repo)
         findings.append(
             Finding(
                 id=f"vulture_{i}",
@@ -78,10 +95,7 @@ def parse_ruff_json(text: str, repo: Path) -> list[Finding]:
         loc = item.get("location") or item.get("locator") or {}
         row = loc.get("row") or item.get("line", 1)
         path = item.get("filename") or item.get("file") or ""
-        try:
-            rel = str(Path(path).resolve().relative_to(repo.resolve()))
-        except Exception:
-            rel = path
+        rel = _normalize_repo_path(path, repo)
         msg = item.get("message") or code
         kind = "unused_import" if code == "F401" else "unused_variable"
         # extract symbol from backticks or quotes

@@ -1,0 +1,84 @@
+{
+  "runtime": "runsc",
+  "attacks": {
+    "rm_rf": {
+      "rm_exit": 1,
+      "rm_stderr_sample": "rm: cannot remove '/media': Permission denied\nrm: cannot remove '/opt': Permission denied\nrm: cannot remove '/lib64': Permission denied\nrm: cannot remove '/proc/net': Permission denied\nrm: cannot remove '/proc/stat': Permission denied\nrm: cannot remove '/proc/uptime': Permission denied\nrm: cannot remove '/proc/version': Permission denied\nrm: cannot remove '/proc/sys/kernel/randomize_va_space': Permission denied\nrm: cannot remove '/proc/sys/kernel/yama/ptrace_scope': Permission denied\nrm: cannot remove '/proc/sys/kernel/ostype': Permission denied\nrm: cannot remove '/proc/sys/kernel/version': Pe",
+      "probe_stdout": "ROOT_TOUCH=touch: cannot touch '/ROOT_WIPED': Permission denied\nWS_TOUCH=\nTMP_TOUCH=\nLS_ROOT=bin boot dev etc home lib lib64 media mnt opt proc root run sbin srv sys tmp usr var workspace\nWS_OK=yes\nPYTHON=2\n",
+      "expected": "rm cannot wipe RO root (Permission denied / Read-only); tmpfs /workspace+/tmp remain usable; python still runs; host untouched",
+      "pass": true,
+      "note": "gVisor reports Permission denied (not classic Read-only filesystem) for many root paths; tmpfs mounts CAN be cleared by rm -rf / \u2014 that is contained blast radius (only the disposable sandbox workspace)."
+    },
+    "env_metadata_network": {
+      "stdout": "ENV_KEYS=HOME,HOSTNAME,LANG,PATH,PIP_DISABLE_PIP_VERSION_CHECK,PWD,PYTHONDONTWRITEBYTECODE,PYTHONUNBUFFERED,WAKE_SANDBOX\nWAKE_SANDBOX=1\nHOST_SECRET_LEAK=False\nGPG_KEY_EMPTY=True\nFETCH_FAIL=http://169.254.169.254/latest/meta-data/ err=URLError:<urlopen error [Errno 101] Network is unreachable>\nFETCH_FAIL=https://example.com/ err=URLError:<urlopen error [Errno -3] Temporary failure in name resolution>\n",
+      "exit": 0,
+      "expected": "WAKE_SANDBOX=1; no host cloud/API secrets; fetches fail under network=none",
+      "pass": true,
+      "metadata_firewall_note": "VM-level metadata firewall (iptables DROP to 169.254.169.254) cannot be fully verified here \u2014 this box is not the production Vultr sandbox VM. We verify network_mode=none blocks the probe from the container."
+    },
+    "fork_bomb": {
+      "bomb_exit": 128,
+      "bomb_timed_out": false,
+      "bomb_killed": false,
+      "bomb_duration_sec": 0.3767397403717041,
+      "bomb_stdout": "",
+      "bomb_stderr": "waiting on pid 4: waiting on PID 4 in sandbox \"71be3b106f8c74ceed50be7a026aead02b4ff0c340c61158dbbaa3057e41858f\": urpc method \"containerManager.WaitPID\" failed: EOF\n",
+      "after_stdout": "OCI runtime exec failed: executing processes for container: cannot execute in container \"71be3b106f8c74ceed50be7a026aead02b4ff0c340c61158dbbaa3057e41858f\" in state stopped\r\n",
+      "after_exit": 128,
+      "pids_limit": 128,
+      "expected": "forks contained by pids=128 / gVisor; sandbox may die; host unaffected",
+      "pass": true,
+      "kills": [],
+      "note": "Python fork bomb tripped gVisor/pids limit; sentry WaitPID EOF and container stopped \u2014 blast radius stayed inside the disposable sandbox. Host remained healthy with 0 leftover containers after destroy."
+    },
+    "infinite_loop": {
+      "exit": 137,
+      "timed_out": true,
+      "killed": true,
+      "duration_sec": 60.03063893318176,
+      "stderr": "Killed\n",
+      "expected": "timeout -s KILL 60s ends the loop; duration ~60s",
+      "pass": true,
+      "kills": [
+        "timeout/kill on: ['python', '-c', 'while True: pass'] exit=137"
+      ]
+    },
+    "pytest_conftest_rm_and_innocent": {
+      "collect_exit": 1,
+      "collect_out_sample": "rm: cannot remove '/media': Permission denied\nrm: cannot remove '/opt': Permission denied\nrm: cannot remove '/lib64': Permission denied\nrm: cannot remove '/proc/uptime': Permission denied\nrm: cannot remove '/proc/modules': Permission denied\nrm: cannot remove '/proc/net': Permission denied\nrm: cannot remove '/proc/sentry-meminfo': Permission denied\nrm: cannot remove '/proc/stat': Permission denied\nrm: cannot remove '/proc/version': Permission denied\nrm: cannot remove '/proc/devices': Permission d",
+      "after_conftest_rm": "REPO_WIPED_TMPFS",
+      "innocent_exit": 0,
+      "innocent_out": ".                                                                        [100%]\n1 passed, 3 deselected in 0.06s\n",
+      "expected": "conftest rm -rf / cannot kill host; may wipe sandbox tmpfs workspace (contained); after re-seed, innocent_add passes",
+      "pass": true
+    }
+  },
+  "notes": [],
+  "container_id": "4d4ea388f976",
+  "uid": 65532,
+  "create_notes": [
+    "cap-drop ALL",
+    "no-new-privileges",
+    "read-only rootfs",
+    "tmpfs /workspace+/tmp",
+    "mem=512m cpus=1.0 pids=128"
+  ],
+  "env_at_create": {
+    "PYTHON_SHA256": "",
+    "HOSTNAME": "4d4ea388f976",
+    "HOME": "/home/wake",
+    "PYTHON_VERSION": "",
+    "PIP_DISABLE_PIP_VERSION_CHECK": "1",
+    "WAKE_SANDBOX": "1",
+    "PATH": "/usr/local/bin:/usr/bin:/bin",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONUNBUFFERED": "1",
+    "LANG": "C.UTF-8",
+    "GPG_KEY": ""
+  },
+  "summary_pass": true,
+  "host_notes": {
+    "WAKE_SANDBOX_on_host": "<unset>",
+    "metadata_firewall": "NOT fully verifiable on this box (VM-level control)"
+  }
+}

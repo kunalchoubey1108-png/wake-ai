@@ -17,7 +17,7 @@ from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, Streamin
 from fastapi.staticfiles import StaticFiles
 from sse_starlette.sse import EventSourceResponse
 
-from control_plane.agent.pipeline import run_job_local
+from control_plane.agent.sandbox_pipeline import run_job_auto as run_job_local
 from control_plane.api.db import Database
 from control_plane.config import settings
 from control_plane.patcher.graveyard import load_wake_lock
